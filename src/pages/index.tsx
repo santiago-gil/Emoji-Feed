@@ -73,6 +73,14 @@ const CreatePostWizard = () => {
 };
 
 /**
+ * <TODO>
+ * Rather than waiting for the server to block on the validations, do it on the client size using Zod and React Hook Form
+ * Managing form state using React Hook Form is also much better, and you don't have that
+ * Sticky key effect where you're typing and everything comes up all at once b/c you're rendering all of the post on every key
+ * </TODO>
+ */
+
+/**
  * Rather than define the type, it's what getAll responds
  */
 type PostWithUser = RouterOutputs["posts"]["getAll"][number];
@@ -90,10 +98,14 @@ const PostView = (props: PostWithUser) => {
       />
       <div className="flex flex-col">
         <div className="flex text-slate-300">
-          <span>{`@${author.username}`}</span>
-          <span className="font-thin">
-            &nbsp;{`· ${dayjs(post.createdAt).fromNow()}`}
-          </span>
+          <Link href={`/@${author.username}`}>
+            <span>{`@${author.username}`}</span>
+          </Link>
+          <Link href={`/post/${post.id}`}>
+            <span className="font-thin">
+              &nbsp;{`· ${dayjs(post.createdAt).fromNow()}`}
+            </span>
+          </Link>
         </div>
         <span className="text-2xl">{post.content}</span>
       </div>
