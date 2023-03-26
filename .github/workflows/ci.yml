@@ -10,9 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: pnpm/actions/setup-pnpm@v1
+    - name: Set up Node.js and pnpm
+      uses: actions/setup-node@v2
       with:
-        version: 6.0.2
+        node-version: '16.x'
+        cache: 'pnpm'
+        registry-url: 'https://registry.npmjs.org/'
 
     - name: Install Dependencies
       run: pnpm install
