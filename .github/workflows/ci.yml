@@ -35,7 +35,12 @@ jobs:
       - name: Install deps (with cache)
         run: pnpm install
 
-      - name: Build, lint and typecheck
-        run: pnpm build lint type-check
-        env:
-          SKIP_ENV_VALIDATION: true
+      - name: Build
+        run: pnpm build
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm type-check
+
