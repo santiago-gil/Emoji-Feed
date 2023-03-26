@@ -17,6 +17,12 @@ import { Redis } from "@upstash/redis";
 import { filterUserForClient } from "~/server/helpers/filterUserForClient";
 import { type Post } from "@prisma/client";
 
+// Create a new ratelimiter, that allows 3 requests per 1 minute
+const ratelimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(3, "1 m"),
+  analytics: true
+});
 
 const addUserDataToPosts = async (posts: Post[]) => {
   const users = (
@@ -45,15 +51,18 @@ const addUserDataToPosts = async (posts: Post[]) => {
   })
 }
 
-// Create a new ratelimiter, that allows 3 requests per 1 minute
-const ratelimit = new Ratelimit({
-  redis: Redis.fromEnv(),
-  limiter: Ratelimit.slidingWindow(3, "1 m"),
-  analytics: true
-});
 
 
 export const postsRouter = createTRPCRouter({
+
+  getById: publicProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+    const post = await ctx.prisma.post.findUnique({ where: { id: input.id } })
+
+    if (!post) throw new TRPCError({ code: "NOT_FOUND" })
+
+    return (await addUserDataToPosts([post]))[0];
+  }),
+
   getAll: publicProcedure.query(async ({ ctx }) => {
     const posts = await ctx.prisma.post.findMany({
       take: 100,
