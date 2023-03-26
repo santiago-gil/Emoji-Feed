@@ -1,16 +1,14 @@
 import { type NextPage } from "next";
 import Link from "next/link";
 import { useUser, SignInButton, SignOutButton } from "@clerk/nextjs";
-import { api, type RouterOutputs } from "~/utils/api";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
+import { api } from "~/utils/api";
 import Image from "next/image";
 import { LoadingPage, LoadingSpinner } from "~/components/loading";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { PageLayOut } from "~/components/layout";
+import { PostView } from "~/components/postview";
 
-dayjs.extend(relativeTime);
 
 const CreatePostWizard = () => {
   const { user } = useUser();
@@ -79,39 +77,6 @@ const CreatePostWizard = () => {
  * Sticky key effect where you're typing and everything comes up all at once b/c you're rendering all of the post on every key
  * </TODO>
  */
-
-/**
- * Rather than define the type, it's what getAll responds
- */
-type PostWithUser = RouterOutputs["posts"]["getAll"][number];
-
-const PostView = (props: PostWithUser) => {
-  const { post, author } = props;
-  return (
-    <div key={post.id} className=" flex gap-3 border-slate-400 p-4">
-      <Image
-        src={author?.profileImageUrl}
-        className="h-14 w-14 rounded-full"
-        width={56}
-        height={56}
-        alt={`${author.username}'s profile picture`}
-      />
-      <div className="flex flex-col">
-        <div className="flex text-slate-300">
-          <Link href={`/@${author.username}`}>
-            <span>{`@${author.username}`}</span>
-          </Link>
-          <Link href={`/post/${post.id}`}>
-            <span className="font-thin">
-              &nbsp;{`· ${dayjs(post.createdAt).fromNow()}`}
-            </span>
-          </Link>
-        </div>
-        <span className="text-2xl">{post.content}</span>
-      </div>
-    </div>
-  );
-};
 
 const Feed = () => {
   const { data, isLoading: postsLoading } = api.posts.getAll.useQuery();
