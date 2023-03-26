@@ -3,25 +3,39 @@ name: CI
 on: [push, pull_request]
 
 env:
-  DATABASE_URL: "https://fake.com"
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Set up Node.js and pnpm
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16.x'
-        cache: 'pnpm'
-        registry-url: 'https://registry.npmjs.org/'
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-    - name: Install Dependencies
-      run: pnpm install
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.2.4
 
-    - name: TypeScript Typecheck
-      run: pnpm run typecheck
+      - name: Setup Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-    - name: Run Lint
-      run: pnpm run lint
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install deps (with cache)
+        run: pnpm install
+
+      - name: Build, lint and typecheck
+        run: pnpm build lint type-check
+        env:
+          SKIP_ENV_VALIDATION: true
