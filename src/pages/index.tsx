@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 import { PageLayOut } from "~/components/layout";
 import { PostView } from "~/components/postview";
 
-
 const CreatePostWizard = () => {
   const { user } = useUser();
   const [input, setInput] = useState("");
@@ -86,7 +85,7 @@ const Feed = () => {
   if (!data) return <div>Something went wrong</div>;
 
   return (
-    <div className="flex flex-col border-b border-slate-400">
+    <div className="flex flex-col gap">
       {data.map((fullPost) => (
         <PostView {...fullPost} key={fullPost.post.id} />
       ))}
@@ -104,7 +103,7 @@ const Home: NextPage = () => {
   if (!userLoaded) return <div />;
   return (
     <PageLayOut>
-      <div className="flex border-b border-slate-400 p-4">
+      <div className="flex border-b border-neutral-500 p-4">
         {!isSignedIn && (
           <div className="flex justify-center">
             <SignInButton />

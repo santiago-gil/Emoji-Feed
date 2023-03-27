@@ -46,12 +46,8 @@ const addUserDataToPosts = async (posts: Post[]) => {
         ...author, username: author.username
       }
     }
-
-
   })
 }
-
-
 
 export const postsRouter = createTRPCRouter({
 
