@@ -4,7 +4,8 @@ const config = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  plugins: [require("tailwind-scrollbar")({ nocompatible: true })],
 };
 
 module.exports = config;

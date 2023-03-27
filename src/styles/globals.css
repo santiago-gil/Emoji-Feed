@@ -2,10 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    @apply bg-neutral-900 text-neutral-100;
+@layer base {
 
-    @apply overscroll-none;
+    html {
+        @apply bg-neutral-900 text-neutral-100;
 
-    @apply overflow-hidden
+        @apply overscroll-none;
+    }
+}
+
+.custom-scrollbar {
+    @apply scroll-smooth scrollbar-thin scrollbar-track-transparent scrollbar-thumb-neutral-700;
 }
